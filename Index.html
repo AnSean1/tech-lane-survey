@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>What's My Tech Lane? - Agile Wealth Academy</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #6d3f8e 0%, #cb914c 100%);
+      min-height: 100vh;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+    
+    #root {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .logo img {
+      max-width: 180px;
+      height: auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    h1 {
+      color: #2d3748;
+      font-size: 24px;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    
+    .subtitle {
+      color: #718096;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    
+    .question-container {
+      margin-bottom: 20px;
+    }
+    
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    
+    .option {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    .option:active {
+      transform: scale(0.98);
+    }
+    
+    .option:hover {
+      border-color: #cb914c;
+      background: #fffbf5;
+    }
+    
+    .option.selected {
+      border-color: #cb914c;
+      background: linear-gradient(135deg, #fffbf5, #fff7ed);
+      box-shadow: 0 4px 12px rgba(203, 145, 76, 0.2);
+    }
+    
+    .option-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6d3f8e, #cb914c);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    
+    .option-text {
+      color: #2d3748;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    
+    .progress {
+      text-align: center;
+      margin-bottom: 16px;
+      color: #718096;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6d3f8e, #cb914c);
+      transition: width 0.3s;
+      border-radius: 3px;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+    
+    button {
+      padding: 14px 24px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #6d3f8e, #cb914c);
+      color: white;
+    }
+    
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+    
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+    
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+    
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .results {
+      text-align: center;
+    }
+    
+    .results-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    
+    .results-lane {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #6d3f8e, #cb914c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .results-description {
+      color: #4a5568;
+      font-size: 16px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    
+    .role-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    
+    .role-card {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 16px;
+      border-left: 4px solid #cb914c;
+    }
+    
+    .role-title {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+    
+    .role-salary {
+      color: #cb914c;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    
+    .role-path {
+      font-size: 12px;
+      color: #718096;
+    }
+    
+    .next-steps {
+      background: linear-gradient(135deg, #fffbf5, #fff7ed);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 24px;
+      text-align: left;
+    }
+    
+    .next-steps h3 {
+      color: #2d3748;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    
+    .next-steps ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .next-steps li {
+      color: #4a5568;
+      padding: 6px 0;
+      padding-left: 24px;
+      position: relative;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .next-steps li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #cb914c;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 14px;
+      fontSize: 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-color: #cb914c;
+    }
+    
+    .intro-text {
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: #4a5568;
+      line-height: 1.6;
+    }
+    
+    @media (min-width: 500px) {
+      .container {
+        padding: 32px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .role-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const questions = [
+      {
+        id: 1,
+        text: "When working on a group project, you naturally:",
+        options: [
+          { letter: "A", text: "Keep everyone on track and remove obstacles", lane: "Organizer" },
+          { letter: "B", text: "Decide what should be built and why", lane: "Planner" },
+          { letter: "C", text: "Find errors and ensure quality", lane: "Protector" },
+          { letter: "D", text: "Build or design the solution", lane: "Builder" }
+        ]
+      },
+      {
+        id: 2,
+        text: "You enjoy work that is:",
+        options: [
+          { letter: "A", text: "Organized and people-focused", lane: "Organizer" },
+          { letter: "B", text: "Strategic and decision-driven", lane: "Planner" },
+          { letter: "C", text: "Detail-oriented and precise", lane: "Protector" },
+          { letter: "D", text: "Hands-on and creative", lane: "Builder" }
+        ]
+      },
+      {
+        id: 3,
+        text: "Others describe you as:",
+        options: [
+          { letter: "A", text: "A natural leader or coach", lane: "Organizer" },
+          { letter: "B", text: "A strategic problem-solver", lane: "Planner" },
+          { letter: "C", text: "Thorough and detail-oriented", lane: "Protector" },
+          { letter: "D", text: "Innovative and creative", lane: "Builder" }
+        ]
+      },
+      {
+        id: 4,
+        text: "When facing a tight deadline, you:",
+        options: [
+          { letter: "A", text: "Coordinate the team and keep everyone aligned", lane: "Organizer" },
+          { letter: "B", text: "Prioritize what matters most", lane: "Planner" },
+          { letter: "C", text: "Ensure nothing is overlooked", lane: "Protector" },
+          { letter: "D", text: "Focus on building the solution", lane: "Builder" }
+        ]
+      },
+      {
+        id: 5,
+        text: "Your ideal work environment:",
+        options: [
+          { letter: "A", text: "Collaborative with clear structure", lane: "Organizer" },
+          { letter: "B", text: "Strategic with autonomy", lane: "Planner" },
+          { letter: "C", text: "Methodical with standards", lane: "Protector" },
+          { letter: "D", text: "Creative with flexibility", lane: "Builder" }
+        ]
+      },
+      {
+        id: 6,
+        text: "You're most energized by:",
+        options: [
+          { letter: "A", text: "Helping teams work smoothly", lane: "Organizer" },
+          { letter: "B", text: "Making strategic decisions", lane: "Planner" },
+          { letter: "C", text: "Catching and fixing problems", lane: "Protector" },
+          { letter: "D", text: "Creating something new", lane: "Builder" }
+        ]
+      },
+      {
+        id: 7,
+        text: "In your past roles, you've excelled at:",
+        options: [
+          { letter: "A", text: "Facilitating and coordinating", lane: "Organizer" },
+          { letter: "B", text: "Planning and strategizing", lane: "Planner" },
+          { letter: "C", text: "Quality control and compliance", lane: "Protector" },
+          { letter: "D", text: "Designing or building solutions", lane: "Builder" }
+        ]
+      },
+      {
+        id: 8,
+        text: "When learning something new, you prefer:",
+        options: [
+          { letter: "A", text: "Group learning with discussion", lane: "Organizer" },
+          { letter: "B", text: "Understanding the big picture first", lane: "Planner" },
+          { letter: "C", text: "Following a structured process", lane: "Protector" },
+          { letter: "D", text: "Hands-on experimentation", lane: "Builder" }
+        ]
+      },
+      {
+        id: 9,
+        text: "You find satisfaction in:",
+        options: [
+          { letter: "A", text: "Seeing teams succeed together", lane: "Organizer" },
+          { letter: "B", text: "Achieving strategic goals", lane: "Planner" },
+          { letter: "C", text: "Delivering flawless work", lane: "Protector" },
+          { letter: "D", text: "Bringing ideas to life", lane: "Builder" }
+        ]
+      },
+      {
+        id: 10,
+        text: "Your communication style is:",
+        options: [
+          { letter: "A", text: "Facilitative and inclusive", lane: "Organizer" },
+          { letter: "B", text: "Strategic and persuasive", lane: "Planner" },
+          { letter: "C", text: "Precise and thorough", lane: "Protector" },
+          { letter: "D", text: "Visual and hands-on", lane: "Builder" }
+        ]
+      }
+    ];
+
+    const laneData = {
+      Organizer: {
+        icon: "⚙️",
+        description: "You're a natural coordinator who keeps teams aligned and work flowing smoothly.",
+        color: "#cb914c",
+        roles: [
+          { title: "Scrum Master", salary: "$90K-$140K", path: "RSM, CSM, PSM I" },
+          { title: "Agile Coach", salary: "$110K-$170K", path: "RSM + Experience" }
+        ],
+        nextSteps: [
+          "Get RSM certified (Registered Scrum Master via Scrum.org)",
+          "Practice facilitation and team coaching techniques",
+          "Join Agile communities and attend meetups",
+          "Enhance with AI tools - learn AI-powered Scrum practices"
+        ],
+        awaCourses: [
+          { 
+            title: "🎓 RSM - Registered Scrum Master", 
+            description: "Official Scrum.org training | Industry-recognized certification | Launch your Scrum Master career",
+            cta: "Become a Certified Scrum Master"
+          },
+          { 
+            title: "🤖 AI-SM: AI-Enhanced Scrum Master", 
+            description: "Learn to incorporate AI into your Scrum Master role for 10x productivity and efficiency",
+            cta: "Master AI-powered facilitation"
+          }
+        ]
+      },
+      Planner: {
+        icon: "📋",
+        description: "You excel at understanding needs and deciding what should be built to solve problems.",
+        color: "#6d3f8e",
+        roles: [
+          { title: "Product Owner", salary: "$95K-$150K", path: "RPO, CSPO, PSPO" },
+          { title: "Business Analyst", salary: "$85K-$130K", path: "CBAP, PMI-PBA" }
+        ],
+        nextSteps: [
+          "Get RPO certified (Registered Product Owner via Scrum.org)",
+          "Practice writing user stories and product roadmaps",
+          "Build a portfolio showcasing strategic thinking",
+          "Use AI to enhance product discovery and prioritization"
+        ],
+        awaCourses: [
+          { 
+            title: "🎓 RPO - Registered Product Owner", 
+            description: "Official Scrum.org training | Master product strategy and backlog management | Industry-recognized",
+            cta: "Become a Certified Product Owner"
+          },
+          { 
+            title: "🤖 AI-PO: AI-Enhanced Product Owner", 
+            description: "Leverage AI for product discovery, prioritization, and stakeholder management",
+            cta: "Transform your product strategy with AI"
+          }
+        ]
+      },
+      Protector: {
+        icon: "🛡️",
+        description: "You have a keen eye for detail and ensure quality, security, and compliance.",
+        color: "#27AE60",
+        roles: [
+          { title: "QA Tester", salary: "$75K-$120K", path: "ISTQB Foundation" },
+          { title: "QA Analyst", salary: "$80K-$125K", path: "ISTQB, CSTE" }
+        ],
+        nextSteps: [
+          "Get ISTQB Foundation certification",
+          "Practice manual and automated testing",
+          "Document test cases and bug reports",
+          "Explore AI-powered testing tools and automation"
+        ],
+        awaCourses: [
+          { 
+            title: "🤖 AI-QA: AI-Enhanced Quality Assurance", 
+            description: "Use AI to revolutionize your testing strategy, automation, and bug detection",
+            cta: "Level up your QA game with AI"
+          },
+          { 
+            title: "🚀 ISTQB Foundation Prep", 
+            description: "Get certified and launch your QA career",
+            cta: "Start your QA journey"
+          }
+        ]
+      },
+      Builder: {
+        icon: "🔨",
+        description: "You love creating solutions and bringing ideas to life through design or code.",
+        color: "#3498DB",
+        roles: [
+          { title: "Junior Developer", salary: "$70K-$110K", path: "Bootcamp, self-study" },
+          { title: "UX/UI Designer", salary: "$75K-$120K", path: "Portfolio, courses" }
+        ],
+        nextSteps: [
+          "Choose a specific path: development or design",
+          "Build projects and create a portfolio",
+          "Contribute to open source or volunteer projects",
+          "Learn to use AI coding assistants for 10x productivity"
+        ],
+        awaCourses: [
+          { 
+            title: "🤖 AI for Developers & Designers", 
+            description: "Master AI tools like GitHub Copilot, ChatGPT, and AI design assistants",
+            cta: "Build faster with AI"
+          },
+          { 
+            title: "🚀 Tech Career Accelerator", 
+            description: "From zero to employed - complete career transition program",
+            cta: "Fast-track your tech career"
+          }
+        ]
+      }
+    };
+
+    function Quiz() {
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [answers, setAnswers] = useState({});
+      const [showResults, setShowResults] = useState(false);
+      const [userName, setUserName] = useState('');
+      const [userEmail, setUserEmail] = useState('');
+      const [showStart, setShowStart] = useState(true);
+
+      const handleAnswer = (lane) => {
+        setAnswers({ ...answers, [currentQuestion]: lane });
+      };
+
+      const handleNext = () => {
+        if (currentQuestion < questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+        } else {
+          calculateResults();
+        }
+      };
+
+      const handlePrevious = () => {
+        if (currentQuestion > 0) {
+          setCurrentQuestion(currentQuestion - 1);
+        }
+      };
+
+      const calculateResults = () => {
+        const counts = {};
+        Object.values(answers).forEach(lane => {
+          counts[lane] = (counts[lane] || 0) + 1;
+        });
+        
+        const topLane = Object.keys(counts).reduce((a, b) => 
+          counts[a] > counts[b] ? a : b
+        );
+        
+        setShowResults(topLane);
+        
+        // Save result to storage (non-shared, personal)
+        try {
+          window.storage?.set(`quiz-result-${Date.now()}`, JSON.stringify({
+            name: userName,
+            email: userEmail,
+            lane: topLane,
+            date: new Date().toISOString(),
+            answers: counts
+          }), false);
+        } catch (e) {
+          console.log('Storage not available');
+        }
+      };
+
+      const handleStart = () => {
+        if (userName.trim() && userEmail.trim() && userEmail.includes('@')) {
+          setShowStart(false);
+        }
+      };
+
+      const restartQuiz = () => {
+        setCurrentQuestion(0);
+        setAnswers({});
+        setShowResults(false);
+        setShowStart(true);
+        setUserName('');
+        setUserEmail('');
+      };
+
+      if (showStart) {
+        return (
+          <div className="container">
+            <div className="logo">
+              <svg viewBox="0 0 1024 1024" style={{maxWidth: '160px', height: 'auto'}}>
+                <text x="512" y="512" fontSize="90" textAnchor="middle" fill="#cb914c" fontWeight="bold" fontFamily="Arial">Agile Wealth Academy</text>
+              </svg>
+            </div>
+            <div className="header">
+              <h1>🎯 What's My Tech Lane?</h1>
+              <p className="subtitle">Discover which tech career path matches your natural strengths</p>
+            </div>
+            <div style={{
+              background: 'linear-gradient(135deg, #f7f4ff, #fffbf5)',
+              padding: '16px',
+              borderRadius: '10px',
+              marginBottom: '20px',
+              borderLeft: '4px solid #cb914c'
+            }}>
+              <p style={{ fontSize: '14px', color: '#4a5568', marginBottom: '8px', lineHeight: '1.5' }}>
+                <strong style={{ color: '#6d3f8e' }}>Agile Wealth Academy</strong> - Official Scrum.org Training Partner
+              </p>
+              <p style={{ fontSize: '13px', color: '#718096', margin: 0, lineHeight: '1.4' }}>
+                Offering RSM, RPO, and AI-Enhanced courses to accelerate your tech career
+              </p>
+            </div>
+            <p className="intro-text">
+              This 10-question quiz will help identify which of the 4 tech career lanes best fits your skills and work style.
+            </p>
+            <input
+              type="text"
+              placeholder="Your first name *"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+            <input
+              type="email"
+              placeholder="Your email address *"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleStart()}
+              required
+            />
+            <button 
+              className="btn-primary" 
+              onClick={handleStart} 
+              disabled={!userName.trim() || !userEmail.trim() || !userEmail.includes('@')}
+            >
+              Start Quiz →
+            </button>
+            <p style={{ fontSize: '12px', color: '#718096', marginTop: '12px', textAlign: 'center' }}>
+              We'll use your email to send you personalized career resources
+            </p>
+          </div>
+        );
+      }
+
+      if (showResults) {
+        const lane = laneData[showResults];
+        return (
+          <div className="container">
+            <div className="logo">
+              <svg viewBox="0 0 1024 1024" style={{maxWidth: '120px', height: 'auto', margin: '0 auto'}}>
+                <text x="512" y="512" fontSize="180" textAnchor="middle" fill="#cb914c" fontWeight="bold" fontFamily="Arial">AWA</text>
+              </svg>
+            </div>
+            <div className="results">
+              <div className="results-icon">{lane.icon}</div>
+              <h1>Hey {userName}! You're a</h1>
+              <div className="results-lane">{showResults} Lane</div>
+              <p className="results-description">{lane.description}</p>
+              
+              <div className="role-cards">
+                {lane.roles.map((role, i) => (
+                  <div key={i} className="role-card">
+                    <div className="role-title">{role.title}</div>
+                    <div className="role-salary">{role.salary}</div>
+                    <div className="role-path">Path: {role.path}</div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="next-steps">
+                <h3>Your Next Steps:</h3>
+                <ul>
+                  {lane.nextSteps.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div style={{ 
+                background: 'linear-gradient(135deg, #6d3f8e, #cb914c)', 
+                borderRadius: '12px', 
+                padding: '24px', 
+                marginTop: '24px',
+                color: 'white'
+              }}>
+                <h3 style={{ color: 'white', marginBottom: '16px', fontSize: '18px' }}>
+                  🎓 Agile Wealth Academy Courses for You
+                </h3>
+                {lane.awaCourses.map((course, i) => (
+                  <div key={i} style={{
+                    background: 'rgba(255,255,255,0.15)',
+                    borderRadius: '10px',
+                    padding: '16px',
+                    marginBottom: i < lane.awaCourses.length - 1 ? '12px' : '0',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '6px', fontSize: '16px' }}>
+                      {course.title}
+                    </div>
+                    <div style={{ fontSize: '14px', marginBottom: '8px', opacity: 0.95 }}>
+                      {course.description}
+                    </div>
+                    <div style={{ fontSize: '13px', fontWeight: '600', opacity: 0.9 }}>
+                      → {course.cta}
+                    </div>
+                  </div>
+                ))}
+                <p style={{ 
+                  fontSize: '13px', 
+                  marginTop: '16px', 
+                  marginBottom: '0',
+                  textAlign: 'center',
+                  opacity: 0.9
+                }}>
+                  Want to learn more? Connect with us after the masterclass!
+                </p>
+              </div>
+              
+              <div style={{ marginTop: '24px' }}>
+                <button className="btn-primary" onClick={restartQuiz}>
+                  Take Quiz Again
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      const question = questions[currentQuestion];
+      const selectedAnswer = answers[currentQuestion];
+      const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+      return (
+        <div className="container">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="progress">
+            Question {currentQuestion + 1} of {questions.length}
+          </div>
+          
+          <div className="question-container">
+            <div className="question-text">{question.text}</div>
+            
+            {question.options.map((option) => (
+              <div
+                key={option.letter}
+                className={`option ${selectedAnswer === option.lane ? 'selected' : ''}`}
+                onClick={() => handleAnswer(option.lane)}
+              >
+                <div className="option-letter">{option.letter}</div>
+                <div className="option-text">{option.text}</div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="nav-buttons">
+            <button
+              className="btn-secondary"
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+            >
+              ← Prev
+            </button>
+            <button
+              className="btn-primary"
+              onClick={handleNext}
+              disabled={!selectedAnswer}
+            >
+              {currentQuestion === questions.length - 1 ? 'Results →' : 'Next →'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Quiz />, document.getElementById('root'));
+  </script>
+</body>
+</html>
