@@ -549,6 +549,32 @@
       }
     };
 
+    // Google Sheets Web App URL
+    const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz0t1L18Hk0h10bL2KsmwWEMWXTyHbYegIql0FodAQDmSfDhFDCD4-osBrKlzDH5IHD/exec';
+
+    // Function to send data to Google Sheets
+    async function sendToGoogleSheets(name, email, lane, scoreBreakdown) {
+      try {
+        const response = await fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            lane: lane,
+            timestamp: new Date().toISOString(),
+            scores: scoreBreakdown
+          })
+        });
+        console.log('Data sent to Google Sheets successfully');
+      } catch (error) {
+        console.error('Error sending to Google Sheets:', error);
+      }
+    }
+
     function Quiz() {
       const [currentQuestion, setCurrentQuestion] = useState(0);
       const [answers, setAnswers] = useState({});
@@ -584,6 +610,9 @@
         const topLane = Object.keys(counts).reduce((a, b) => 
           counts[a] > counts[b] ? a : b
         );
+        
+        // Send data to Google Sheets
+        sendToGoogleSheets(userName, userEmail, topLane, counts);
         
         setShowResults(topLane);
         
